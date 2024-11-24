@@ -1,5 +1,4 @@
 <x-layout>
-
     <div class="note-container">
         <a href="{{ route('notes.create') }}" class="new-note-btn">
             New Note
@@ -13,14 +12,23 @@
                 </div>
                 <div class="note-buttons">
                     <a href="{{ route('notes.show', $note->id) }}" class="note-view-button">View</a>
-
                     <a href="{{ route('notes.edit', $note->id) }}" class="note-edit-button">Edit</a>
-                    <button class="note-delete-button">Delete</button>
+
+                    <!-- Add a delete form -->
+                    <form action="{{ route('notes.destroy', $note->id) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="note-delete-button">Delete</button>
+                    </form>
                 </div>
             </div>
             @endforeach
         </div>
-    </div>
 
+        <!-- Add pagination links -->
+        <div class="pagination">
+            {{ $notes->links() }}
+        </div>
+    </div>
 </x-layout>
 

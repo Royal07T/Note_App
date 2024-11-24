@@ -38,14 +38,10 @@ class NoteController extends Controller
 
         $note = Note::create($data);
 
-        // Debugging: Verify the created note and the route resolution
-        dd([
-            'note' => $note,
-            'route' => route('notes.show', $note)
-        ]);
-
-        return to_route('notes.show', $note)->with('message', 'Note was created successfully.');
+        return to_route('notes.show', $note)
+            ->with('message', 'Note was created successfully.');
     }
+
     /**
      * Display the specified resource.
      */
@@ -68,12 +64,13 @@ class NoteController extends Controller
     public function update(Request $request, Note $note): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validate([
-            'note' => ['required', 'string', 'max:500'] // Added max length constraint
+            'note' => ['required', 'string', 'max:500']
         ]);
 
         $note->update($data);
 
-        return to_route('notes.show', $note)->with('message', 'Note was updated successfully.');
+        return to_route('notes.show', $note)
+            ->with('message', 'Note was updated successfully.');
     }
 
     /**
@@ -84,7 +81,8 @@ class NoteController extends Controller
         try {
             $note->delete();
 
-            return to_route('notes.index')->with('message', 'Note was deleted successfully.');
+            return to_route('notes.index')
+                ->with('message', 'Note was deleted successfully.');
         } catch (\Exception $e) {
             return back()->withErrors('Error deleting the note. Please try again.');
         }
