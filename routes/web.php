@@ -19,23 +19,23 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::controller(NoteController::class)
- ->prefix('note')
+ ->prefix('notes')
  ->name('notes.')
  ->middleware(['auth'])
  ->group(
     function () {
         // Index: Display a listing of the resource (homepage for this example)
-        Route::get('/', [NoteController::class, 'index'])->name('index');
+        Route::get('/', 'index')->name('index');
         // Create: Show the form for creating a new resource
         Route::get('/create', 'create')->name('create');
         // Store: Store a newly created resource in storage
-        Route::post('/notes', 'store')->name('store');
+        Route::post('/store', 'store')->name('store');
         // Show: Display the specified resource
         Route::get('/{id}', 'show')->name('show');
         // Edit: Show the form for editing the specified resource
         Route::get('/{id}/edit', 'edit')->name('edit');
         // Update: Update the specified resource in storage
-        Route::put('/{id}', [NoteController::class, 'update'])->name('update');
+        Route::put('/{id}', 'update')->name('update');
         // Destroy: Remove the specified resource from storage
         Route::delete('/notes/{id}', 'destroy')->name('destroy');
     });
