@@ -1,4 +1,4 @@
-<x-layout>
+<x-app-layout>
     <div class="note-container single-note">
         <div class="note-header">
             <h1 class="py-4 text-3xl">Note: {{ $note->created_at->format('F j, Y \a\t g:i A') }}</h1>
@@ -17,4 +17,4 @@
             </div>
         </div>
     </div>
-</x-layout>
+</x-app-layout>

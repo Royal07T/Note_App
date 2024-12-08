@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
@@ -12,7 +13,8 @@ class NoteController extends Controller
      */
     public function index(): \Illuminate\View\View
     {
-        $notes = Note::query()
+        // Get only the notes that belong to the authenticated user
+        $notes = Note::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(10); // Display 10 items per page
 
@@ -32,11 +34,16 @@ class NoteController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
+        // Validate input
         $data = $request->validate([
             'note' => ['required', 'string', 'max:500']
         ]);
 
-        $note = Note::create($data);
+        // Create the note and assign the authenticated user to it
+        $note = Note::create([
+            'note' => $data['note'],
+            'user_id' => Auth::id(), // Associate the note with the authenticated user
+        ]);
 
         return to_route('notes.show', $note)
             ->with('message', 'Note was created successfully.');
@@ -47,6 +54,11 @@ class NoteController extends Controller
      */
     public function show(Note $note): \Illuminate\View\View
     {
+        // Ensure the note belongs to the authenticated user
+        if ($note->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return view('note.show', ['note' => $note]);
     }
 
@@ -55,6 +67,11 @@ class NoteController extends Controller
      */
     public function edit(Note $note): \Illuminate\View\View
     {
+        // Ensure the note belongs to the authenticated user
+        if ($note->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return view('note.edit', ['note' => $note]);
     }
 
@@ -63,6 +80,12 @@ class NoteController extends Controller
      */
     public function update(Request $request, Note $note): \Illuminate\Http\RedirectResponse
     {
+        // Ensure the note belongs to the authenticated user
+        if ($note->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validate input
         $data = $request->validate([
             'note' => ['required', 'string', 'max:500']
         ]);
@@ -78,6 +101,11 @@ class NoteController extends Controller
      */
     public function destroy(Note $note): \Illuminate\Http\RedirectResponse
     {
+        // Ensure the note belongs to the authenticated user
+        if ($note->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         try {
             $note->delete();
 
